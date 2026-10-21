@@ -26,7 +26,7 @@ Mengubah desain/gambar menjadi kode komponen.
 Engineering sisi klien (bukan desain visual, tapi struktur kode).
 - Ciri: audit/refactor komponen, pola **pemakaian API dari sisi klien**
   (service, HTTP client), framework (Angular/React/Vue).
-- Contoh: ng-component-audit-doc, service-pattern-handoff, bill-api-usage.
+- Contoh: ng-component-audit-doc, service-pattern-handoff, bill-api-usage, typescript-pro.
 
 ### backend
 Skill tentang sisi server dari sebuah API.
@@ -39,12 +39,12 @@ Skill tentang sisi server dari sebuah API.
 ### analysis
 Analisis kode, QA, pengambilan keputusan, dan penulisan teks.
 - Ciri: output berupa penilaian, laporan, keputusan, atau teks yang diperbaiki.
-- Contoh: sonarqube, llm-council, humanizer.
+- Contoh: sonarqube, llm-council, humanizer, prompt-context-builder.
 
 ### utility
 Tooling umum dan konversi/transformasi file.
 - Ciri: tugas teknis lintas-domain yang tidak spesifik ke satu stack.
-- Contoh: markitdown.
+- Contoh: markitdown, commit-message-creator.
 
 ### meta
 Skill yang mengelola skill lain.
