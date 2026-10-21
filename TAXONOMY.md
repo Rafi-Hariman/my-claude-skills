@@ -24,13 +24,17 @@ Mengubah desain/gambar menjadi kode komponen.
 
 ### frontend
 Engineering sisi klien (bukan desain visual, tapi struktur kode).
-- Ciri: audit/refactor komponen, pola service/API di sisi FE, framework (Angular/React/Vue).
-- Contoh: ng-component-audit-doc, service-pattern-handoff.
+- Ciri: audit/refactor komponen, pola **pemakaian API dari sisi klien**
+  (service, HTTP client), framework (Angular/React/Vue).
+- Contoh: ng-component-audit-doc, service-pattern-handoff, bill-api-usage.
 
 ### backend
-Pola API/service sisi server.
-- Ciri: HTTP client, endpoint, autentikasi server, database.
-- Contoh: bill-api-usage.
+Skill tentang sisi server dari sebuah API.
+- Ciri: membuat/mendefinisikan endpoint, controller, autentikasi server,
+  database, logic di sisi server.
+- Pembeda penting: pola **memakai** API dari kode klien (service, HTTP client)
+  itu frontend — yang backend adalah API-nya sendiri.
+- Status: kosong untuk sekarang, menunggu skill pertama.
 
 ### analysis
 Analisis kode, QA, pengambilan keputusan, dan penulisan teks.

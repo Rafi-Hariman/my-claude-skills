@@ -36,9 +36,10 @@ claude plugin install ui-ux@my-claude-skills --scope user
 claude plugin install all@my-claude-skills --scope user
 ```
 
-> Ganti `<github-user>` dengan username GitHub kamu. Ingat: plugin `backend`
-> berisi skill yang project-specific — install dengan `--scope project` di
-> project yang relevan, bukan `user`, kalau mau global tetap bersih.
+> Ganti `<github-user>` dengan username GitHub kamu. Catatan: beberapa skill
+> project-specific (`bill-api-usage`, `ng-component-audit-doc`, `sonarqube`)
+> lebih pas di-install dengan `--scope project` di project yang relevan,
+> bukan `user`, biar global tetap bersih.
 
 ## Menambah skill baru
 

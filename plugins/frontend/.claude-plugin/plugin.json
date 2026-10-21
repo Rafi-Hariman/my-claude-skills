@@ -1,7 +1,7 @@
 {
   "name": "frontend",
   "version": "1.0.0",
-  "description": "Engineering frontend: audit komponen Angular & pola service/API.",
+  "description": "Engineering frontend: audit komponen Angular & pola konsumsi API di sisi klien.",
   "author": { "name": "Rafi Hariman" },
   "license": "MIT"
 }

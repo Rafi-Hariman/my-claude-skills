@@ -5,7 +5,7 @@
   "plugins": [
     { "name": "ui-ux", "source": "./plugins/ui-ux", "description": "Desain visual, styling, branding, banner, slide, mobile UI, de-slop." },
     { "name": "slicing", "source": "./plugins/slicing", "description": "Slice UI: desain/screenshot menjadi kode komponen." },
-    { "name": "frontend", "source": "./plugins/frontend", "description": "Engineering frontend (Angular)." },
+    { "name": "frontend", "source": "./plugins/frontend", "description": "Engineering frontend: audit komponen Angular & pola konsumsi API di sisi klien." },
     { "name": "backend", "source": "./plugins/backend", "description": "Pola API/service backend." },
     { "name": "analysis", "source": "./plugins/analysis", "description": "Analisis kode, QA, pengambilan keputusan, penulisan." },
     { "name": "utility", "source": "./plugins/utility", "description": "Tooling umum & konversi file." },
