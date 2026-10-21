@@ -1,0 +1,15 @@
+{
+  "name": "my-claude-skills",
+  "description": "Koleksi skill pribadi untuk Claude Code — diorganisir per kategori (plugin).",
+  "owner": { "name": "Rafi Hariman" },
+  "plugins": [
+    { "name": "ui-ux", "source": "./plugins/ui-ux", "description": "Desain visual, styling, branding, banner, slide, mobile UI, de-slop." },
+    { "name": "slicing", "source": "./plugins/slicing", "description": "Slice UI: desain/screenshot menjadi kode komponen." },
+    { "name": "frontend", "source": "./plugins/frontend", "description": "Engineering frontend (Angular)." },
+    { "name": "backend", "source": "./plugins/backend", "description": "Pola API/service backend." },
+    { "name": "analysis", "source": "./plugins/analysis", "description": "Analisis kode, QA, pengambilan keputusan, penulisan." },
+    { "name": "utility", "source": "./plugins/utility", "description": "Tooling umum & konversi file." },
+    { "name": "meta", "source": "./plugins/meta", "description": "Skill pengelola skill (skill-forge)." },
+    { "name": "all", "source": "./plugins/bundle", "description": "Bundle: install semua kategori sekaligus." }
+  ]
+}

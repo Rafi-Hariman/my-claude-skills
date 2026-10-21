@@ -1,0 +1,7 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Pola API/service sisi backend.",
+  "author": { "name": "Rafi Hariman" },
+  "license": "MIT"
+}

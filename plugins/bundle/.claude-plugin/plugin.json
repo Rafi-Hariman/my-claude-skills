@@ -1,0 +1,8 @@
+{
+  "name": "all",
+  "version": "1.0.0",
+  "description": "Bundle: install semua kategori skill sekaligus via dependencies.",
+  "author": { "name": "Rafi Hariman" },
+  "license": "MIT",
+  "dependencies": ["ui-ux", "slicing", "frontend", "backend", "analysis", "utility", "meta"]
+}

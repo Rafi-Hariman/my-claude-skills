@@ -1,0 +1,7 @@
+{
+  "name": "slicing",
+  "version": "1.0.0",
+  "description": "Slice UI: ubah desain/screenshot jadi kode komponen (sliceui family).",
+  "author": { "name": "Rafi Hariman" },
+  "license": "MIT"
+}

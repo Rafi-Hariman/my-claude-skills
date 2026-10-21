@@ -1,0 +1,7 @@
+{
+  "name": "utility",
+  "version": "1.0.0",
+  "description": "Tooling umum & konversi file.",
+  "author": { "name": "Rafi Hariman" },
+  "license": "MIT"
+}

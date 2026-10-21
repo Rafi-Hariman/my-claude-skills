@@ -1,0 +1,7 @@
+{
+  "name": "analysis",
+  "version": "1.0.0",
+  "description": "Analisis kode & pengambilan keputusan: SonarQube, council, humanizer.",
+  "author": { "name": "Rafi Hariman" },
+  "license": "MIT"
+}
