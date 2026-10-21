@@ -1,5 +1,5 @@
 ---
-name: api-usage
+name: bill-api-usage
 description: Global API usage patterns for all services in UII Gateway Bill Angular project. Use when making any HTTP requests (GET, POST, PUT, DELETE) through BillService, BillCoreService, BillPostgraduateService, BillUnitService, or any other service.
 tools: Read, Glob, Bash
 ---
