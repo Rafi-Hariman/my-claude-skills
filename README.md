@@ -1,70 +1,99 @@
 # my-claude-skills
 
-Koleksi skill pribadi untuk Claude Code, diorganisir per kategori sebagai
-**plugin**, dipasang lewat **satu marketplace** yang bisa di-install ulang di
-device mana pun.
+Personal Claude Code skill collection, organized as domain-based plugins and distributed through a single marketplace.
 
-## Struktur
+## Repository structure
 
-```
+```text
 my-claude-skills/
-├── .claude-plugin/marketplace.json   ← katalog semua plugin
-├── TAXONOMY.md                       ← sumber kebenaran kategori skill
-├── plugins/
-│   ├── ui-ux/        (desain & UI/UX)
-│   ├── slicing/      (desain → kode)
-│   ├── frontend/     (Angular, service/API FE)
-│   ├── backend/      (API/service server)
-│   ├── analysis/     (QA, council, humanizer)
-│   ├── utility/      (konversi file)
-│   ├── meta/         (skill-forge: pengelola skill)
-│   └── bundle/       (plugin "all" = install semua)
+├── .claude-plugin/
+│   └── marketplace.json
+├── TAXONOMY.md
+└── plugins/
+    ├── ui-ux/       # UI/UX and visual design
+    ├── slicing/     # Design-to-code workflows
+    ├── frontend/    # Frontend engineering
+    ├── backend/     # Backend and API engineering
+    ├── analysis/    # Review, analysis, and reasoning
+    ├── utility/     # File and workflow utilities
+    ├── meta/        # Skill authoring and maintenance
+    └── bundle/      # Bundle containing all plugins
 ```
 
-Nama skill ter-namespace otomatis: `/ui-ux:design`, `/backend:api-usage`, dst.
+`TAXONOMY.md` is the source of truth for skill categories and naming conventions.
 
-## Install di device baru
+Skills are automatically namespaced by plugin, for example:
+
+```text
+/ui-ux:ui-styling
+/frontend:typescript-pro
+/meta:skill-forge
+```
+
+## Installation
+
+Register the marketplace once:
 
 ```bash
-# sekali: daftarkan marketplace
-claude plugin marketplace add <github-user>/my-claude-skills
+claude plugin marketplace add Rafi-Hariman/my-claude-skills
+```
 
-# install per kategori
+Install a plugin by category:
+
+```bash
 claude plugin install ui-ux@my-claude-skills --scope user
+```
 
-# atau install semua sekaligus (bundle)
+Or install the complete collection:
+
+```bash
 claude plugin install all@my-claude-skills --scope user
 ```
 
-> Ganti `<github-user>` dengan username GitHub kamu. Catatan: beberapa skill
-> project-specific (`bill-api-usage`, `ng-component-audit-doc`, `sonarqube`)
-> lebih pas di-install dengan `--scope project` di project yang relevan,
-> bukan `user`, biar global tetap bersih.
+Use `--scope project` for project-specific skills such as `ng-component-audit-doc` and `sonarqube`.
 
-## Menambah skill baru
+## Creating or improving a skill
 
-Gunakan helper bawaan:
+Use the built-in Skill Forge:
 
-```
-/meta:skill-forge "deskripsi ide / paste prompt skill kamu"
+```text
+/meta:skill-forge "<skill idea, workflow, prompt, or existing skill>"
 ```
 
-Helper akan menentukan kategori (dari `TAXONOMY.md`), memberi nama, dan menulis
-`SKILL.md`-nya. Lihat `TAXONOMY.md` untuk aturan kategori & penamaan.
+Skill Forge uses the live repository taxonomy to classify, design, validate, and evaluate skills before adding them to the collection.
 
-## Update setelah menambah/mengubah skill
+Standard skill location:
+
+```text
+plugins/<category>/skills/<skill-name>/SKILL.md
+```
+
+## Publishing changes
+
+Review the changes, then commit and push them using the repository's normal Git workflow:
 
 ```bash
-# di repo ini
-git add -A && git commit -m "add skill: <nama>"
+git status
+git diff --staged
+git commit
 git push
-
-# di device (setelah push)
-claude plugin update <kategori>@my-claude-skills
 ```
 
-## Lisensi skill pihak ketiga
+Update an installed plugin after the changes are published:
 
-Skill yang di-vendor dari sumber lain WAJIB menyertakan file lisensi aslinya di
-samping `SKILL.md`, dan menyebutkan author aslinya di frontmatter. Jangan hapus
-notice copyright (khususnya untuk lisensi MIT).
+```bash
+claude plugin update <category>@my-claude-skills
+```
+
+## Third-party skills
+
+Vendored third-party content must comply with its upstream license and redistribution terms.
+
+Preserve all required:
+
+- copyright notices;
+- license and notice files;
+- attribution and provenance;
+- modification or redistribution requirements.
+
+A public GitHub repository does not automatically grant permission to copy, modify, or redistribute its contents. Verify the upstream license before vendoring a skill or resource.
