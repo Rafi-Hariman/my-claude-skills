@@ -6,7 +6,7 @@ argument-hint: "[feature/component path or name]"
 license: MIT
 metadata:
   author: Rafi Hariman
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # Feature Security Audit
@@ -47,6 +47,17 @@ Do not optimize for finding a high number of issues. Reject weak hypotheses aggr
 10. **No live exploitation.** Never probe production/shared endpoints, use real accounts
     or secrets, run destructive requests, or perform availability testing under this
     skill.
+11. **Evidence provenance is mandatory.** Separate bounded local execution, deterministic
+    source proof, and prior verified artifacts. Never present inherited evidence as if
+    this audit independently reproduced it.
+12. **Public reachability is part of the proof.** A handler-level weakness is not a
+    confirmed UI/replay/race finding unless a public user/component event can reach the
+    sensitive operation under the alleged state.
+13. **Confirmation stops at the last established boundary.** Downstream consequences
+    beyond independently established evidence remain `needs_validation`.
+14. **Threat principals are capability-based.** Describe what the principal is permitted
+    to do and what additional capability or integrity effect it must not obtain; do not
+    rely on vague role labels such as `Admin`.
 
 # Relationship to the engineering workflow
 
@@ -193,6 +204,17 @@ Consider when present:
 Do not label a value attacker-controlled without a realistic lower-trust principal or
 write path.
 
+Describe principals by capability, not organizational title. Prefer:
+
+```text
+Principal: authenticated feature operator permitted to generate postgraduate bills
+Permitted capability: search eligible students and initiate one valid generation
+Not assumed: authority to alter another organization scope or submit stale student sets
+Security asset/invariant: integrity of the generated billing set
+```
+
+over `Admin user` or `authorized user` without capability detail.
+
 ## Security-relevant operations and sinks
 
 Consider when present:
@@ -225,6 +247,19 @@ lower-trust source/action
 Record where the feature assumes another layer will enforce security.
 
 # Phase 3: import prior evidence without duplicating work
+
+Record evidence availability before hunting:
+
+```text
+Functional-audit evidence: Available | Unavailable | Partial
+Deterministic SAST/Sonar evidence: Available | Unavailable | Partial
+API/backend contract evidence: Available | Unavailable | Partial
+Independent verifier capability: Available | Unavailable
+```
+
+These fields describe coverage provenance. They do not block the audit, but an audit
+without deterministic SAST evidence must not be presented as the complete post-feature
+security pipeline.
 
 ## Functional audit
 
@@ -274,6 +309,17 @@ Check:
 A client injection candidate needs a controllable source plus an executing/disclosing
 sink. Safe Angular interpolation by itself is not a finding.
 
+When rejecting a candidate because the source is trusted, record trust provenance:
+
+```text
+Source trust inside audited feature: no lower-trust write path found
+Owning-service write provenance: verified | not verified | not applicable
+Lifecycle risk: could source ownership become user-editable or cross-account later?
+```
+
+Do not permanently classify an upstream value as trusted merely because this feature
+cannot currently edit it.
+
 ## B. Feature access and object/data boundary
 
 Use whenever the feature sends or receives IDs identifying protected resources.
@@ -307,6 +353,23 @@ Check:
 - security behavior when dependencies/config values are missing.
 
 A disabled button is not proof of mutation idempotency or backend atomicity.
+
+For client race/replay/duplicate candidates, handler analysis is only the beginning.
+Before confirmation, establish the full public trigger path:
+
+```text
+public action/event #1
+  -> reachable handler/modal/state #1 remains pending
+public action/event #2 while #1 remains active
+  -> prove the trigger is still reachable
+  -> prove the second callback/subscription/operation can exist
+sensitive operation #1
+sensitive operation #2
+```
+
+If any required step depends on undocumented library timing, browser behavior, or an
+unexecuted assumption that source inspection cannot deterministically settle, use
+`needs_validation` until bounded local execution resolves it.
 
 ## D. Validation and trust of client-generated payloads
 
@@ -396,7 +459,10 @@ Trust boundary crossed or suspected
 Source trace
 Existing protection checked
 Observed/source-proven effect
+Evidence provenance: executed_local | source_proven | prior_verified_artifact
+Evidence revision/artifact: <HEAD/commit/report when applicable>
 Impact boundary: client | API | backend-verified | unknown
+Last independently established boundary
 Missing facts
 ```
 
@@ -425,6 +491,9 @@ Check, in order:
 6. Does the candidate cross a meaningful boundary rather than merely violate style?
 7. Is the claimed impact bounded to what evidence proves?
 8. Is there a plausible non-security explanation that fully rejects the candidate?
+9. Is every required public trigger/event reachable, not merely the eventual handler?
+10. What is the last boundary established by this audit itself, and which later claims
+    rely only on prior artifacts or unavailable external/runtime behavior?
 
 ## Independent validation
 
@@ -455,8 +524,26 @@ Use only when all are established:
 - bounded impact supported by evidence;
 - validation did not disprove it.
 
-A confirmed finding may be source-proven without live exploitation when the path is
-deterministic and impact is bounded to what source proves.
+A confirmed finding may be source-proven without live exploitation only when every
+security-relevant step is deterministic from source and the impact is bounded to what
+that source proves.
+
+Every confirmed finding must state evidence provenance:
+
+- `executed_local`: a bounded, non-production local test/reproduction directly observed
+  the complete relevant path;
+- `source_proven`: the complete relevant path is deterministic from current source and
+  contains no unresolved runtime/library/deployment step;
+- `prior_verified_artifact`: a material part of the claim relies on a prior contract,
+  audit, test, or external-repository artifact. Include its revision/commit when known.
+
+Multiple provenance types may be listed. The finding's impact must stop at the weakest
+boundary. A `prior_verified_artifact` does not become independently reproduced merely
+because this audit read it.
+
+For browser/client-side findings with material runtime behavior, prefer `executed_local`.
+If bounded local execution is unavailable and source cannot settle browser/library
+behavior deterministically, use `needs_validation`.
 
 ## `needs_validation`
 
@@ -516,6 +603,24 @@ idempotency behavior was traced.
 
 Do not assign a backend-impact severity based on frontend evidence alone.
 
+## Last-established-boundary rule
+
+Use the narrowest impact statement supported by this audit's evidence.
+
+Example:
+
+```text
+Confirmed at client/API boundary:
+The feature can submit a mixed-state request whose student set comes from filter state A
+while current year/installment fields come from filter state B.
+
+Backend billing outcome:
+needs_validation unless current backend selection/write behavior was independently
+traced in this audit or safely reproduced.
+```
+
+A prior backend contract may strengthen context, but its provenance must remain visible.
+
 # Phase 10: safe validation policy
 
 Default audit behavior is source-first and read-mostly.
@@ -550,6 +655,29 @@ Never under this skill:
 When authorized local validation executes target-controlled code, use the platform's
 OS-enforced sandbox, disable external networking, sanitize environment variables, limit
 resources, and restrict writes to scratch/test-owned paths.
+
+# Audit/fix separation
+
+The audit reports the required security outcome. Do not prescribe implementation details
+unless the user separately asks for remediation design or a fix.
+
+Prefer:
+
+```text
+Required outcome: a pending Generate operation cannot accept a second mutation.
+Required outcome: stale read state cannot determine a later sensitive write.
+```
+
+Avoid audit-stage prescriptions such as:
+
+```text
+add `if (isLoading) return`
+use switchMap
+add request-id token
+```
+
+Those may be valid remediation options, but choosing one is a separate engineering task
+that must consider project architecture and regression risk.
 
 # Phase 11: integrate findings with previous layers
 
@@ -594,6 +722,9 @@ Recommended chat/report structure:
 - rejected count
 - hardening notes
 - overall evidence quality
+- Functional-audit evidence: Available / Unavailable / Partial
+- Deterministic SAST/Sonar evidence: Available / Unavailable / Partial
+- Independent verifier: Executed / Available but not executed / Unavailable
 
 ## Ownership boundary
 | In scope | Exact boundary exception | Out of scope |
@@ -613,9 +744,9 @@ Recommended chat/report structure:
 | ... | ... | ... | ... | ... |
 
 ## Confirmed findings
-| Severity | Finding | Boundary | Evidence | Verified impact |
-|---|---|---|---|---|
-| ... | ... | ... | ... | ... |
+| Severity | Finding | Boundary | Evidence provenance | Evidence | Verified impact |
+|---|---|---|---|---|---|
+| ... | ... | ... | source_proven / executed_local / prior_verified_artifact | ... | ... |
 
 ## Needs validation
 | Candidate | Missing fact | Owner/boundary | Safe validation step |
@@ -746,6 +877,14 @@ Critical duplicate billing vulnerability.
 
 unless backend evidence actually proves duplicate billing.
 
+When a finding depends on a prior artifact, say so directly:
+
+```text
+Client path: source_proven at HEAD abc123.
+Backend selection semantics: prior_verified_artifact from API contract at backend commit def456.
+Confirmed impact stops at request submission; backend mutation result remains needs_validation.
+```
+
 # Completion criteria
 
 The audit is complete only when applicable items are satisfied:
@@ -771,4 +910,11 @@ The audit is complete only when applicable items are satisfied:
 - production source and infrastructure were not modified;
 - exact out-of-ownership facts did not expand into a general login/IAM/platform audit;
 - ASVS was used as scoped coverage vocabulary, not a whole-application compliance claim;
-- saved reporting, when requested, created one canonical security report by default.
+- saved reporting, when requested, created one canonical security report by default;
+- each confirmed finding recorded evidence provenance and source/artifact revision when applicable;
+- source-proven UI race/replay findings established complete public reachability, not only handler weakness;
+- confirmed impact stopped at the last independently established boundary;
+- threat principals were described by capability rather than vague role labels;
+- audit findings stated required security outcomes without prescribing a fix unless separately requested;
+- deterministic SAST/Sonar, functional-audit, and independent-verifier coverage status was reported;
+- trusted-source rejections recorded trust provenance/lifecycle rather than permanently assuming trust.
